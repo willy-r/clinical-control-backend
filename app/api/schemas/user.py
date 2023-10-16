@@ -1,10 +1,14 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, Field
 
 
 class UserResponseSchema(BaseModel):
-    id: int
+    id: str
     name: str
     email: EmailStr
+    created_at: datetime
+    updated_at: datetime
 
 
 class UsersResponseSchema(BaseModel):
@@ -17,8 +21,14 @@ class UserCreateSchema(BaseModel):
     password: str
 
 
+class UserUpdateSchema(BaseModel):
+    name: str = Field(..., max_length=50)
+    email: EmailStr = Field(..., max_length=50)
+    password: str
+
+
 class UserDbSchema(BaseModel):
-    id: int
+    id: str
     name: str
     email: EmailStr
     password: str
