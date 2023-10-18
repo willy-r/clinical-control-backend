@@ -4,8 +4,8 @@ import mongomock
 import pytest
 from fastapi.testclient import TestClient
 
-from app.database.mongodb import get_users_collection
 from app.main import app
+from app.repositories.user import UserRepository, get_user_repository
 
 
 @pytest.fixture
@@ -20,12 +20,12 @@ def test_users_collection(mongomock_client):
 
 @pytest.fixture
 def test_client(test_users_collection):
-    def get_users_collection_override():
-        return test_users_collection
+    def get_user_repository_override():
+        return UserRepository(test_users_collection)
 
     app.dependency_overrides[
-        get_users_collection
-    ] = get_users_collection_override
+        get_user_repository
+    ] = get_user_repository_override
     yield TestClient(app)
     app.dependency_overrides.clear()
 
