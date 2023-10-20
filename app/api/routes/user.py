@@ -8,6 +8,7 @@ from app.api.schemas.user import (
     UsersResponseSchema,
     UserUpdateSchema,
 )
+from app.core.security import hash_password
 from app.repositories.user import UserRepository, get_user_repository
 
 router = APIRouter(prefix='/users', tags=['users'])
@@ -29,7 +30,10 @@ def create_user(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail='Email already exists'
         )
-    created_user = user_repository.create_user(user.model_dump())
+    hashed_password = hash_password(user.password)
+    user = user.model_dump(exclude={'password'})
+    user['hashed_password'] = hashed_password
+    created_user = user_repository.create_user(user)
     return UserResponseSchema(id=str(created_user['_id']), **created_user)
 
 

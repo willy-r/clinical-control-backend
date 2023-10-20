@@ -4,6 +4,7 @@ import mongomock
 import pytest
 from fastapi.testclient import TestClient
 
+from app.core.security import hash_password
 from app.main import app
 from app.repositories.user import UserRepository, get_user_repository
 
@@ -36,6 +37,7 @@ def test_user(test_users_collection):
         {
             'name': 'test',
             'email': 'test@test.com',
+            'hashed_password': hash_password('123'),
             'password': '123',
             'created_at': datetime.now(tz=timezone.utc),
             'updated_at': datetime.now(tz=timezone.utc),
